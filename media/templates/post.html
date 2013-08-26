@@ -14,5 +14,12 @@
 		{{ form.as_p }}
 			<input type="submit" value="Comment" />
 		</form>
+{% endblock %}
 
+{% block tags-list %}
+<ul class="inline">
+	{% for tag in tags %}
+	<li><h2>{{ tag.name }} </h2></li>
+	{% endfor %}
+</ul>
 {% endblock %}

@@ -19,17 +19,23 @@ def post(request, post_id):
 	post = Post.objects.get(id = post_id)
 	comments = Comment.objects.filter(post=post)
 	word_count = len(re.findall("\w+", post.text))
+	posttags = PostTag.objects.filter(post=post)
+	tags = []
+	for posttag in posttags:
+		tags.append(posttag.tag)
+
 	if request.method == 'POST':
 		form = CommentForm(request.POST)
 		if form.is_valid():
 			form.save()
 			comment = Comment(post=post, reply_to=None)
 			form = CommentForm(instance=comment)
-			return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form':form})
+			return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form':form, 'tags':tags})
 	else:
 		comment = Comment(post=post, reply_to=None)
 		form = CommentForm(instance=comment)
-	return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form})
+	print tags
+	return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form, 'tags':tags})
 
 def posts(request, year):
 	output = []

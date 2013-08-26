@@ -194,7 +194,7 @@ SOCIAL_AUTH_ASSOCIATION_HANDLE_LENGTH = 16
 SOCIAL_AUTH_ENABLED_BACKENDS = ('facebook', 'google', 'github')
 
 FACEBOOK_APP_ID = 'xxx'
-FACEBOOK_API_SECRET = 'xxxxxx'
+FACEBOOK_API_SECRET = 'xxx'
 FACEBOOK_EXTENDED_PERMISSIONS = ['email']
 FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'ru_RU'}
  
@@ -211,5 +211,4 @@ SOCIAL_AUTH_PIPELINE = (
 'social_auth.backends.pipeline.user.create_user',
 'social_auth.backends.pipeline.social.associate_user',
 'social_auth.backends.pipeline.user.update_user_details',
-'simblog.pipeline.get_user',
 )

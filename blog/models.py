@@ -24,5 +24,17 @@ class Comment(models.Model):
 	reply_to = models.ForeignKey('self', blank=True, null=True)
 	author = models.ForeignKey(Author)
 	created = models.DateTimeField(auto_now_add=True)
-	#modified = models.DateTimeField(auto_now=True)
 	text = models.TextField()
+
+class Tag(models.Model):
+	name = models.TextField(max_length=32)
+	def __str__(self):
+		return self.name
+
+class PostTag(models.Model):
+	post = models.ForeignKey(Post)
+	tag = models.ForeignKey(Tag)
+	class Meta:
+		unique_together = ["post", "tag"]
+	def __str__(self):
+		return str(self.post) + ' - ' + str(self.tag)

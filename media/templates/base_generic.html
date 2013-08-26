@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-	    <link rel="stylesheet" href="/static/css/styles.css" />
-	    <link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
-	    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	    
+	    <link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+	    <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+	    <link rel="stylesheet" href="/static/css/styles.css" />
 	    <script src="http://code.jquery.com/jquery.js"></script>
 		<script src="/static/bootstrap/js/bootstrap.min.js"></script>
 	    
@@ -27,7 +27,9 @@
 	              <li><a href="#contact">Contact</a></li>
 	            </ul>
 	            <ul class="nav pull-right">
+
 				{% block credentials %}
+					<li><span class="navbar-text">Login with: </span></li>
 					<li><a href="{% url 'socialauth_begin' 'facebook' %}"><img class="icon" src="/static/icons/facebook.png" title="Login with Facebook" /></a></li>
 			        <li><a href="{% url 'socialauth_begin' 'google-oauth2' %}"><img class="icon" src="/static/icons/google.png" title="Login with Google" /></a></li>
 					<li><a href="{% url 'socialauth_begin' 'github' %}"><img class="icon" src="/static/icons/github.png" title="Login with GitHub" /></a></li>
@@ -40,23 +42,28 @@
 
 		<div class="container-fluid">
 			<div class="row-fluid">
-				<div class="span3">
-			        {% block sidebar %}
-			        <ul>
-			            <li><a href="/blog/">Home</a></li>
-			            <li><a href="/about/">About Me</a></li>
-			        </ul>
-			        {% endblock %}
+				<div class="span1"></div>
+				<div class="span6" id="content">
+			        {% block content %}{% endblock %}
 			    </div>
 
-			    <div class="span9" id="content">
-			        {% block content %}{% endblock %}
+				<div class="span5">
+			        {% block sidebar %}
+				    	{% block posts %}
+				    	{% endblock %}
+				    	
+				    	<div class="tags-list">
+					    	{% block tags-list %}
+					    	{% endblock %}
+				    	</div>
+			        {% endblock %}
 			    </div>
 			</div>
 		</div>
-
-	    <div id="debug-data">
-	        {% block debug_data %} {{ debug_data }} {% endblock %}
-	    </div>
+		<footer>
+		    <div id="debug-data">
+		        {% block debug_data %} {{ debug_data }} {% endblock %}
+		    </div>
+		</footer>
 	</body>
 </html>
