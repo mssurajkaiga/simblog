@@ -87,6 +87,9 @@ left: 10px;
 }
 
 /* Bootstrap overrides */
+a {
+	color:white;
+}
 .input-append {
 	position: relative;
 	top: 5px;

@@ -28,8 +28,14 @@ class Comment(models.Model):
 
 class Tag(models.Model):
 	name = models.TextField(max_length=32)
+	alt_name = models.TextField(max_length=32, null=True, blank=True)
 	def __str__(self):
 		return self.name
+
+	def save(self, *args, **kwargs):
+		if(self.alt_name==None or self.alt_name==''):
+			self.alt_name = self.name
+		super(Tag, self).save(*args, **kwargs)
 
 class PostTag(models.Model):
 	post = models.ForeignKey(Post)

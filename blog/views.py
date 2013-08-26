@@ -70,6 +70,17 @@ def posts_by_day(request, year, month, day):
 	posts = Post.objects.filter(created__year=year, created__month=month, created__day=day)
 	return render(request, 'posts.html', {'posts': posts})
 
+def posts_by_tag(request, tag):
+	posttags = PostTag.objects.filter(tag=Tag.objects.get(alt_name=tag))
+	tags = []
+	posts = []
+	for posttag in posttags:
+		posts.append(posttag.post)
+		for posttag2 in PostTag.objects.filter(post=posttag.post):
+			tags.append(posttag2.tag)
+	tags = list(set(tags))
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
+
 @login_required
 def complete(request):
     """Login complete view, displays user data"""
