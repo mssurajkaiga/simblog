@@ -34,7 +34,9 @@ class Tag(models.Model):
 
 	def save(self, *args, **kwargs):
 		if(self.alt_name==None or self.alt_name==''):
-			self.alt_name = self.name
+			self.alt_name = self.name.replace(' ', '_')
+		if(self.alt_name.find(' ') != -1):
+			self.alt_name = self.alt_name.replace(' ', '_')
 		super(Tag, self).save(*args, **kwargs)
 
 class PostTag(models.Model):
