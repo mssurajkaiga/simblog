@@ -15,6 +15,8 @@ from django.contrib.messages.api import get_messages
 from social_auth import __version__ as version
 from social_auth.utils import setting
 
+from blog.utility import *
+
 def post(request, post_id):
 	post = Post.objects.get(id = post_id)
 	comments = Comment.objects.filter(post=post)
@@ -79,6 +81,12 @@ def posts_by_tag(request, tag):
 		for posttag2 in PostTag.objects.filter(post=posttag.post):
 			tags.append(posttag2.tag)
 	tags = list(set(tags))
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
+
+#Search functionality
+def search_by_text(request, text):
+	posts = search_post_by_text(text)
+	tags = get_tags_by_posts(posts)
 	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
 
 @login_required
