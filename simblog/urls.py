@@ -4,6 +4,8 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
+from blog import views
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'simblog.views.home', name='home'),
@@ -15,4 +17,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^blog/', include('blog.urls')),
+    url(r'^complete/$', views.complete, name='complete'),
+    url(r'^logout/$', views.logout, name='logout'),
+    url(r'', include('social_auth.urls')),
 )

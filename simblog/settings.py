@@ -1,4 +1,5 @@
 # Django settings for simblog project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -21,6 +22,7 @@ DATABASES = {
     }
 }
 
+BASE_DIR = '/home/mssuraj/development/simblog/'
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -72,6 +74,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(BASE_DIR, "media"),
 )
 
 # List of finder classes that know how to find static files in
@@ -108,7 +111,7 @@ ROOT_URLCONF = 'simblog.urls'
 WSGI_APPLICATION = 'simblog.wsgi.application'
 
 TEMPLATE_DIRS = (
-    "/home/mssuraj/development/simblog/media"
+    os.path.join(BASE_DIR, 'media/templates/'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -125,7 +128,24 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'blog'
+    'blog',
+    'social_auth'
+)
+
+"""TEMPLATE_CONTEXT_PROCESSORS = (
+  "social_auth.context_processors.social_auth_by_type_backends",
+)"""
+
+AUTHENTICATION_BACKENDS = (
+    #'social_auth.backends.twitter.TwitterBackend',
+    'social_auth.backends.facebook.FacebookBackend',
+    'social_auth.backends.google.GoogleOAuth2Backend',
+    #'social_auth.backends.google.GoogleBackend',
+    #'social_auth.backends.yahoo.YahooBackend',
+    #'social_auth.backends.contrib.linkedin.LinkedinBackend',
+    'social_auth.backends.contrib.github.GithubBackend',
+    #'social_auth.backends.OpenIDBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -156,3 +176,40 @@ LOGGING = {
         },
     }
 }
+
+AVATAR_UPLOAD_PATH = os.path.join(BASE_DIR, 'media/avatars/')
+
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/complete/'
+LOGIN_ERROR_URL = '/login-error/'
+
+SOCIAL_AUTH_DEFAULT_USERNAME = 'new_social_auth_user'
+SOCIAL_AUTH_UID_LENGTH = 16
+SOCIAL_AUTH_ASSOCIATION_HANDLE_LENGTH = 16
+SOCIAL_AUTH_NONCE_SERVER_URL_LENGTH = 16
+SOCIAL_AUTH_ASSOCIATION_SERVER_URL_LENGTH = 16
+SOCIAL_AUTH_ASSOCIATION_HANDLE_LENGTH = 16
+
+SOCIAL_AUTH_ENABLED_BACKENDS = ('facebook', 'google', 'github')
+
+FACEBOOK_APP_ID = 'xxx'
+FACEBOOK_API_SECRET = 'xxxxxx'
+FACEBOOK_EXTENDED_PERMISSIONS = ['email']
+FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'ru_RU'}
+ 
+GOOGLE_OAUTH2_CLIENT_ID = 'xxx'
+GOOGLE_OAUTH2_CLIENT_SECRET = 'xxx'
+    
+GITHUB_APP_ID = 'xxx'
+GITHUB_API_SECRET = 'xxx'
+
+SOCIAL_AUTH_PIPELINE = (
+'social_auth.backends.pipeline.social.social_auth_user',
+'social_auth.backends.pipeline.associate.associate_by_email',
+'social_auth.backends.pipeline.user.get_username',
+'social_auth.backends.pipeline.user.create_user',
+'social_auth.backends.pipeline.social.associate_user',
+'social_auth.backends.pipeline.user.update_user_details',
+'simblog.pipeline.get_user',
+)

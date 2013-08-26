@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	    <link rel="stylesheet" href="/static/css/styles.css" />
+	    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	    
+	    <script src="http://code.jquery.com/jquery.js"></script>
+		<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+	    
+	    <title>{% block title %}My blog{% endblock %}</title>
+	</head>
+	<body>
+		<div id="header">
+			<div class="header-title">
+				{% block header-title %} BITS of my mind!! {% endblock %}
+			</div>
+			<div class="header-subtitle">
+				{% block header-subtitle %} - M S Suraj {% endblock %}
+			</div>
+			<ul class="credentials">
+			{% block credentials %}
+				<li><a href="{% url 'socialauth_begin' 'facebook' %}"><img class="icon" src="/static/icons/facebook.png" title="Login with Facebook" /></a></li>
+		        <li><a href="{% url 'socialauth_begin' 'google-oauth2' %}"><img class="icon" src="/static/icons/google.png" title="Login with Google" /></a></li>
+				<li><a href="{% url 'socialauth_begin' 'github' %}"><img class="icon" src="/static/icons/github.png" title="Login with GitHub" /></a></li>
+			{% endblock %}
+			</ul>
+		</div>
+	    <div id="sidebar">
+	        {% block sidebar %}
+	        <ul>
+	            <li><a href="/blog/">Home</a></li>
+	            <li><a href="/about/">About Me</a></li>
+	        </ul>
+	        {% endblock %}
+	    </div>
+
+	    <div id="content">
+	        {% block content %}{% endblock %}
+	    </div>
+
+	    <div id="debug-data">
+	        {% block debug_data %} {{ debug_data }} {% endblock %}
+	    </div>
+	</body>
+</html>

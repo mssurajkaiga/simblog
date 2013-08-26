@@ -1,4 +1,6 @@
 from django.db import models
+from simblog import settings
+import social_auth
 
 class Author(models.Model):
 	first_name = models.CharField(max_length=60)
