@@ -82,7 +82,19 @@ left: 10px;
 	bottom: 5px;
 }
 
+.tags-list {
+	border: solid 1px;
+}
+
 /* Bootstrap overrides */
+.input-append {
+	position: relative;
+	top: 5px;
+}
+
+#appendedInputButton {
+	width: 120%;
+}
 
 textarea:focus,
 input[type="text"]:focus,

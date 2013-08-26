@@ -17,9 +17,10 @@
 {% endblock %}
 
 {% block tags-list %}
+<h3>Tags</h3>
 <ul class="inline">
 	{% for tag in tags %}
-	<li><h2>{{ tag.name }} </h2></li>
+	<li><h4>{{ tag.name }} </h4></li>
 	{% endfor %}
 </ul>
 {% endblock %}
