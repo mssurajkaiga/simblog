@@ -18,10 +18,6 @@ from social_auth.utils import setting
 from blog.utility import *
 
 def post(request, post_id):
-	if request.user.is_authenticated():
-		request.user.logged_in = True
-	else:
-		request.user.logged_in = False
 	post = Post.objects.get(id = post_id)
 	comments = Comment.objects.filter(post=post)
 	word_count = len(re.findall("\w+", post.text))
@@ -30,17 +26,23 @@ def post(request, post_id):
 	for posttag in posttags:
 		tags.append(posttag.tag)
 
-	if request.method == 'POST':
-		form = CommentForm(request.POST)
-		if form.is_valid():
-			form.save()
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+		if request.method == 'POST':
+			form = CommentForm(request.POST)
+			if form.is_valid():
+				user = UserSocialAuth.objects.get(id=request.user.id)
+				form.save(user)
+				comment = Comment(post=post, reply_to=None)
+				form = CommentForm(instance=comment)
+				return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form':form, 'tags':tags})
+		else:
 			comment = Comment(post=post, reply_to=None)
 			form = CommentForm(instance=comment)
-			return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form':form, 'tags':tags})
+			return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form, 'tags':tags})
 	else:
-		comment = Comment(post=post, reply_to=None)
-		form = CommentForm(instance=comment)
-	return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form, 'tags':tags})
+		request.user.logged_in = False
+	return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'tags':tags})
 
 def posts(request, year):
 	if request.user.is_authenticated():

@@ -6,9 +6,17 @@ from blog.models import Comment
 class CommentForm(ModelForm):
 	class Meta:
 		model = Comment
-		exclude = ('created', )
+		exclude = ('created', 'author')
 		widgets = {
 			'post': HiddenInput(),
 			'reply_to': HiddenInput(),
 			'text': Textarea(attrs={'cols':30, 'rows':4})
 		}
+
+	def save(self, user, *args, **kwargs):
+		commit = kwargs.pop('commit', True)
+		instance = super(CommentForm, self).save(*args, commit = False, **kwargs)
+		instance.author = user 
+		if commit:
+		    instance.save()
+		return instance

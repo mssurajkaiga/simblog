@@ -7,13 +7,17 @@
 		{% for comment in comments %}
 		<h4 style="position:relative; left:20px;">{{ comment.text }}</h4>
 		<p style="position:relative; left:20px;">{{ comment.created }}</p>
-		<!--<h3 style="position:relative; left:20px;">{{ comment.author }}</h3>-->
+		<h3 style="position:relative; left:20px;">{{ comment.author }}</h3>
 		{% endfor %}
+		{% if form %}
 		<form action="." method="post">
 		{% csrf_token %}
 		{{ form.as_p }}
 			<input type="submit" value="Comment" />
 		</form>
+		{% else %}
+		<h5 style="color:blue;">Login to comment!</h5>
+		{% endif %}
 {% endblock %}
 
 {% block tags-list %}
