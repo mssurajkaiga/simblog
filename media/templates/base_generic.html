@@ -35,7 +35,7 @@
 	          <a class="brand" href="#">BITS of my mind!!</a>
 	          <div class="nav-collapse collapse">
 	            <ul class="nav">
-	              <li class="active"><a href="#">Home</a></li>
+	              <li class="active"><a href="/blog/posts/all">Home</a></li>
 	              <li><a href="#about">About</a></li>
 	              <li><a href="#contact">Contact</a></li>
 	            </ul>
@@ -46,10 +46,16 @@
 	            <ul class="nav pull-right">
 
 				{% block credentials %}
+				{% if user.logged_in %}
+					<li><span class="navbar-text">Logged in as: <strong>{{ user.first_name }} {{ user.last_name }}</strong></span></li>
+					<li><span class="navbar-text" style="padding-left:3px; padding-right: 3px; color: #ff33ee;"> | </span></li>
+					<li><span class="navbar-text"><a href="/logout/" style="text-decoration:none;">Logout</a></span></li>
+				{% else %}
 					<li><span class="navbar-text">Login with: </span></li>
 					<li><a href="{% url 'socialauth_begin' 'facebook' %}"><img class="icon" src="/static/icons/facebook.png" title="Login with Facebook" /></a></li>
 			        <li><a href="{% url 'socialauth_begin' 'google-oauth2' %}"><img class="icon" src="/static/icons/google.png" title="Login with Google" /></a></li>
 					<li><a href="{% url 'socialauth_begin' 'github' %}"><img class="icon" src="/static/icons/github.png" title="Login with GitHub" /></a></li>
+				{% endif %}
 				{% endblock %}
 				</ul>
 	          </div><!--/.nav-collapse -->

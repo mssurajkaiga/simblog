@@ -18,6 +18,10 @@ from social_auth.utils import setting
 from blog.utility import *
 
 def post(request, post_id):
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
 	post = Post.objects.get(id = post_id)
 	comments = Comment.objects.filter(post=post)
 	word_count = len(re.findall("\w+", post.text))
@@ -39,6 +43,10 @@ def post(request, post_id):
 	return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form, 'tags':tags})
 
 def posts(request, year):
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
 	output = []
 	form_is_saved = False
 	if year=='all':
@@ -49,16 +57,28 @@ def posts(request, year):
 	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
 
 def posts_by_month(request, year, month):
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
 	posts = Post.objects.filter(created__year=year, created__month=month)
 	tags = get_tags_by_posts(posts)
 	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
 
 def posts_by_day(request, year, month, day):
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
 	posts = Post.objects.filter(created__year=year, created__month=month, created__day=day)
 	tags = get_tags_by_posts(posts)
 	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
 
 def posts_by_tag(request, tag):
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
 	posttags = PostTag.objects.filter(tag=Tag.objects.get(alt_name=tag))
 	posts = []
 	for posttag in posttags:
@@ -68,6 +88,10 @@ def posts_by_tag(request, tag):
 
 #Search functionality
 def search(request, data):
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
 	result = search_all(data)
 	if not result:
 		return render(request, 'search.html', {'msg': 'Search returned no results!'})	
@@ -75,14 +99,24 @@ def search(request, data):
 
 @login_required
 def complete(request):
-    """Login complete view, displays user data"""
-    return render(request, 'members.html')
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
+	return render(request, 'members.html')
 
 
 def logout(request):
-    """Logs out user"""
-    auth_logout(request)
-    return HttpResponseRedirect('/blog/')
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
+	auth_logout(request)
+	return HttpResponseRedirect('/blog/posts/all')
 
 def index(request):
-	return HttpResponse("Index Page")
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
+	return HttpResponseRedirect('/blog/posts/all')

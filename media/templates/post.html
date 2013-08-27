@@ -7,7 +7,7 @@
 		{% for comment in comments %}
 		<h4 style="position:relative; left:20px;">{{ comment.text }}</h4>
 		<p style="position:relative; left:20px;">{{ comment.created }}</p>
-		<h3 style="position:relative; left:20px;">{{ comment.author }}</h3>
+		<!--<h3 style="position:relative; left:20px;">{{ comment.author }}</h3>-->
 		{% endfor %}
 		<form action="." method="post">
 		{% csrf_token %}
