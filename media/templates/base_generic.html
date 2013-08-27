@@ -5,9 +5,22 @@
 	    <link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
 	    <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
 	    <link rel="stylesheet" href="/static/css/styles.css" />
-	    <script src="http://code.jquery.com/jquery.js"></script>
+	    <script src="/static/js/jquery-2.0.3.min.js"></script>
 		<script src="/static/bootstrap/js/bootstrap.min.js"></script>
-	    
+	    <script type="text/javascript">
+	    	function search() {
+	    		data = $('#appendedInputButton').val();
+	    		window.location = '/blog/posts/search/'+data;
+	    	}
+
+	    	$(document).ready(function() {
+	    		$('#appendedInputButton').keyup(function(event){
+    				if(event.keyCode == 13){
+        				search();
+    				}
+				});
+	    	});
+	    </script>
 	    <title>{% block title %}My blog{% endblock %}</title>
 	</head>
 	<body>
@@ -28,7 +41,7 @@
 	            </ul>
                 <div class="input-append">
 				    <input class="span2" id="appendedInputButton" placeholder="Search..." type="text">
-				    <button class="btn" type="button">Go!</button>
+				    <button class="btn" type="button" onclick="search()">Go!</button>
 			    </div>
 	            <ul class="nav pull-right">
 

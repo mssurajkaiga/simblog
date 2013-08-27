@@ -1,0 +1,42 @@
+{% extends "base_generic.html" %}
+{% block content %}
+		{% if msg%}
+		<h1> {{ msg }} </h1>
+		{% endif %}
+		{% if result_posts %}
+		<h1>Posts</h1>
+		{% for post in result_posts %}
+			<a href="/blog/post/{{post.id}}"><h2>{{ post.title }}</h2></a>
+			<h3>{{ post.created }}</h3>
+			<p>{{ post.text }}</p>
+		{% endfor %}
+		<hr/>
+		{% endif %}
+
+		{% if result_comments %}
+		<h1>Comments</h1>
+		{% for comment in result_comments %}
+			<a href="/blog/post/{{comment.post}}"><h2>{{ comment.author }}</h2></a>
+			<h3>{{ comment.created }}</h3>
+			<p>{{ comment.text }}</p>
+		{% endfor %}
+		<hr/>
+		{% endif %}
+
+		{% if result_tags %}
+		<h1>Tags</h1>
+		{% for tag in result_tags %}
+			<a href="/blog/posts/tag/{{tag.alt_name}}"><h2>{{ tag.name }} </h2></a>
+		{% endfor %}
+		{% endif %}
+
+{% endblock %}
+
+{% block tags-list %}
+<h3>Tags</h3>
+<ul class="inline">
+	{% for tag in tags %}
+	<li><a href="/blog/posts/tag/{{tag.alt_name}}"><h4>{{ tag.name }} </h4></a></li>
+	{% endfor %}
+</ul>
+{% endblock %}

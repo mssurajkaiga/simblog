@@ -36,7 +36,6 @@ def post(request, post_id):
 	else:
 		comment = Comment(post=post, reply_to=None)
 		form = CommentForm(instance=comment)
-	print tags
 	return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form, 'tags':tags})
 
 def posts(request, year):
@@ -46,53 +45,37 @@ def posts(request, year):
 		posts = Post.objects.all()
 	else:	
 		posts = Post.objects.filter(created__year=year)
-
-	for post in posts:
-		if (request.method == 'POST' and not form_is_saved):
-			form = CommentForm(request.POST)
-			if form.is_valid():
-				form.save()
-				form_is_saved = True
-				comment = Comment(post=post, reply_to=None)
-				form = CommentForm(instance=comment)
-
-		else:
-			comment = Comment(post=post, reply_to=None)
-			form = CommentForm(instance=comment)
-		comments = Comment.objects.filter(post=post)
-		output.append([post, comments, form])
-
-	return render(request, 'posts.html', {'posts': output})
+	tags = get_tags_by_posts(posts)
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
 
 def posts_by_month(request, year, month):
 	posts = Post.objects.filter(created__year=year, created__month=month)
-	return render(request, 'posts.html', {'posts': posts})
+	tags = get_tags_by_posts(posts)
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
 
 def posts_by_day(request, year, month, day):
 	posts = Post.objects.filter(created__year=year, created__month=month, created__day=day)
-	return render(request, 'posts.html', {'posts': posts})
+	tags = get_tags_by_posts(posts)
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
 
 def posts_by_tag(request, tag):
 	posttags = PostTag.objects.filter(tag=Tag.objects.get(alt_name=tag))
-	tags = []
 	posts = []
 	for posttag in posttags:
 		posts.append(posttag.post)
-		for posttag2 in PostTag.objects.filter(post=posttag.post):
-			tags.append(posttag2.tag)
-	tags = list(set(tags))
+	tags = get_tags_by_posts(posts)
 	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
 
 #Search functionality
-def search_by_text(request, text):
-	posts = search_post_by_text(text)
-	tags = get_tags_by_posts(posts)
-	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
+def search(request, data):
+	result = search_all(data)
+	if not result:
+		return render(request, 'search.html', {'msg': 'Search returned no results!'})	
+	return render(request, 'search.html', result)
 
 @login_required
 def complete(request):
     """Login complete view, displays user data"""
-    print request
     return render(request, 'members.html')
 
 
