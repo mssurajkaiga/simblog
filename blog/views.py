@@ -31,7 +31,8 @@ def post(request, post_id):
 		if request.method == 'POST':
 			form = CommentForm(request.POST)
 			if form.is_valid():
-				user = UserSocialAuth.objects.get(id=request.user.social_auth.id)
+				print request.user.id, type(request.user.id)
+				user = UserSocialAuth.objects.get(user_id=request.user.id)
 				form.save(user)
 				comment = Comment(post=post, reply_to=None)
 				form = CommentForm(instance=comment)
