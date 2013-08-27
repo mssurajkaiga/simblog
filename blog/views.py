@@ -31,7 +31,7 @@ def post(request, post_id):
 		if request.method == 'POST':
 			form = CommentForm(request.POST)
 			if form.is_valid():
-				user = UserSocialAuth.objects.get(id=request.user.id)
+				user = UserSocialAuth.objects.get(id=request.user.social_auth.id)
 				form.save(user)
 				comment = Comment(post=post, reply_to=None)
 				form = CommentForm(instance=comment)
@@ -105,6 +105,7 @@ def complete(request):
 		request.user.logged_in = True
 	else:
 		request.user.logged_in = False
+	print request.user.social_auth.values_list('provider')
 	return render(request, 'members.html')
 
 

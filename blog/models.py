@@ -1,12 +1,13 @@
 from django.db import models
 from simblog import settings
 from social_auth.models import UserSocialAuth
+from django.contrib.auth.models import User
 
 class Post(models.Model):
 	title = models.CharField(max_length=200)
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
-	author = models.ForeignKey(UserSocialAuth)
+	author = models.ForeignKey(User)
 	text = models.TextField()
 	
 	def __str__(self):
