@@ -5,9 +5,11 @@
 		<h3>{{ post.created }}<span class="word_count"> | Word Count: {{ word_count }}</span></h3>
 		<p>{{ post.text }}</p>
 		{% for comment in comments %}
-		<h4 style="position:relative; left:20px;">{{ comment.text }}</h4>
-		<p style="position:relative; left:20px;">{{ comment.created }}</p>
-		<h3 style="position:relative; left:20px;">{{ comment.author }}</h3>
+		<div id="{{comment.id}}">
+			<h4 style="position:relative; left:20px;">{{ comment.text }}</h4>
+			<p style="position:relative; left:20px;">{{ comment.created }}</p>
+			<h3 style="position:relative; left:20px;">{{ comment.author }}</h3>
+		</div>
 		{% endfor %}
 		{% if form %}
 		<form action="." method="post">

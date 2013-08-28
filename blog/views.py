@@ -96,6 +96,7 @@ def search(request, data):
 	else:
 		request.user.logged_in = False
 	result = search_all(data)
+	print result
 	if not result:
 		return render(request, 'search.html', {'msg': 'Search returned no results!'})	
 	return render(request, 'search.html', result)
@@ -106,7 +107,6 @@ def complete(request):
 		request.user.logged_in = True
 	else:
 		request.user.logged_in = False
-	print request.user.social_auth.values_list('provider')
 	return render(request, 'members.html')
 
 

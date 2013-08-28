@@ -16,7 +16,8 @@
 		{% if result_comments %}
 		<h1>Comments</h1>
 		{% for comment in result_comments %}
-			<a href="/blog/post/{{comment.post}}"><h2>{{ comment.author }}</h2></a>
+			<a href="/blog/post/{{comment.post.id}}#{{comment.id}}"><h2>{{ comment.post.title }}</h2></a>
+			<h4>{{ comment.author }}</h4>
 			<h3>{{ comment.created }}</h3>
 			<p>{{ comment.text }}</p>
 		{% endfor %}
