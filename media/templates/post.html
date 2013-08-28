@@ -12,10 +12,10 @@
 		</div>
 		{% endfor %}
 		{% if form %}
-		<form action="." method="post">
+		<form action="." method="post" id="comment-form">
 		{% csrf_token %}
 		{{ form.as_p }}
-			<input type="submit" value="Comment" />
+			<button class="btn" type="button" id="comment-btn" onclick="$('#comment-form').submit();">Comment!</button>
 		</form>
 		{% else %}
 		<h5 style="color:blue;">Login to comment!</h5>

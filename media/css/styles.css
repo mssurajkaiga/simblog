@@ -86,6 +86,11 @@ left: 10px;
 	border: solid 1px;
 }
 
+#comment-btn {
+	position: relative;
+	right: -30%;
+}
+
 /* Bootstrap overrides */
 a {
 	color:white;
