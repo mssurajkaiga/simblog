@@ -82,7 +82,7 @@ left: 10px;
 	bottom: 5px;
 }
 
-.tags-list {
+.sidebar-list {
 	border: solid 1px;
 }
 
@@ -95,6 +95,7 @@ left: 10px;
 a {
 	color:white;
 }
+
 .input-append {
 	position: relative;
 	top: 5px;
@@ -129,4 +130,8 @@ input[type="color"]:focus,
   -webkit-box-shadow: inset 3 5px 5px rgba(0,0,0,.075), 0 0 8px rgba(0, 0, 148, 0.8);
   -moz-box-shadow: inset 3 5px 5px rgba(0,0,0,.075), 0 0 8px rgba(0, 0, 148, 0.8);
   box-shadow: inset 3 5px 5px rgba(0,0,0,.075), 0 0 8px rgba(0, 0, 148, 0.8);
+}
+
+.row {
+	margin: 4%;
 }

@@ -23,10 +23,34 @@
 {% endblock %}
 
 {% block tags-list %}
-<h3>Tags</h3>
-<ul class="inline">
-	{% for tag in tags %}
-	<li><a href="/blog/posts/tag/{{tag.alt_name}}"><h4>{{ tag.name }} </h4></a></li>
-	{% endfor %}
-</ul>
+<div class="row sidebar-list">
+	<h3>Tags</h3>
+	<ul class="inline">
+		{% for tag in tags %}
+		<li><a href="/blog/posts/tag/{{tag.alt_name}}"><h4>{{ tag.name }} </h4></a></li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock %}
+
+{% block all-posts %}
+<div class="row sidebar-list">
+	<h3>All Posts</h3>
+	<ul class="inline">
+		{% for post in all_posts %}
+		<li><a href="/blog/post/{{ post.id }}">{{ post.title }}</a></li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock %}
+
+{% block recent-posts %}
+<div class="row sidebar-list">
+	<h3>Recent Posts</h3>
+	<ul class="inline">
+		{% for post in recent_posts %}
+		<li><a href="/blog/post/{{ post.id }}">{{ post.title }}</a></li>
+		{% endfor %}
+	</ul>
+</div>
 {% endblock %}

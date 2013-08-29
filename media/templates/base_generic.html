@@ -71,14 +71,15 @@
 			    </div>
 
 				<div class="span3">
-			        {% block sidebar %}
-				    	{% block posts %}
-				    	{% endblock %}
-
-				    	<div class="tags-list">
+			        {% block sidebar %}				    	
 					    	{% block tags-list %}
 					    	{% endblock %}
-				    	</div>
+
+					    	{% block all-posts %}					    	
+					    	{% endblock %}
+
+					    	{% block recent-posts %}
+					    	{% endblock %}
 			        {% endblock %}
 			    </div>
 			    <div class="span1"></div>

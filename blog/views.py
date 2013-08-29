@@ -22,6 +22,7 @@ def post(request, post_id):
 	comments = Comment.objects.filter(post=post)
 	word_count = len(re.findall("\w+", post.text))
 	posttags = PostTag.objects.filter(post=post)
+	all_posts, recent_posts = get_all_posts()
 	tags = []
 	for posttag in posttags:
 		tags.append(posttag.tag)
@@ -36,14 +37,14 @@ def post(request, post_id):
 				form.save(user)
 				comment = Comment(post=post, reply_to=None)
 				form = CommentForm(instance=comment)
-				return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form':form, 'tags':tags})
+				return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form':form, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
 		else:
 			comment = Comment(post=post, reply_to=None)
 			form = CommentForm(instance=comment)
-			return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form, 'tags':tags})
+			return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
 	else:
 		request.user.logged_in = False
-	return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'tags':tags})
+	return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
 
 def posts(request, year):
 	if request.user.is_authenticated():
@@ -57,7 +58,8 @@ def posts(request, year):
 	else:	
 		posts = Post.objects.filter(created__year=year)
 	tags = get_tags_by_posts(posts)
-	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
+	all_posts, recent_posts = get_all_posts()
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
 
 def posts_by_month(request, year, month):
 	if request.user.is_authenticated():

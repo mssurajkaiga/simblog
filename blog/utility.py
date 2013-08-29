@@ -1,5 +1,8 @@
 from blog.models import *
 from django.db.models import Q
+from datetime import datetime
+
+MAX_RECENT_POSTS = 3
 
 def search_by_tag(tag):
 	posttags = PostTag.objects.filter(tag=Tag.objects.get(alt_name=tag))
@@ -53,4 +56,12 @@ def search_all(data):
 		tags = result_tags
 		
 	return {'result_posts': result_posts, 'result_tags': result_tags, 'result_comments': result_comments, 'tags': tags}
+
+def get_all_posts():
+	posts = Post.objects.order_by('created').all()
+	recent_posts = []
+	rev = list(reversed(posts))
+	for post in rev[:3]:
+		recent_posts.append(post)
+	return [posts, recent_posts]
 
