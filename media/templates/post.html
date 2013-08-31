@@ -1,25 +1,27 @@
 {% extends "base_generic.html" %}
 {% block content %}
-		
-		<h2>{{ post.title }}</h2>
-		<h3>{{ post.created }}<span class="word_count"> | Word Count: {{ word_count }}</span></h3>
-		<p>{{ post.text }}</p>
-		{% for comment in comments %}
-		<div id="{{comment.id}}">
-			<h4 style="position:relative; left:20px;">{{ comment.text }}</h4>
-			<p style="position:relative; left:20px;">{{ comment.created }}</p>
-			<h3 style="position:relative; left:20px;">{{ comment.author }}</h3>
+		<div class="content">
+			<h2 class="text-center">{{ post.title }}</h2>
+			<h4 class="text-center">{{ post.created }}<span class="word_count"> | Word Count: {{ word_count }}</span></h4>
+			<p class="lead">{{ post.text }}</p>
+
+			{% for comment in comments %}
+			<div id="{{comment.id}}" class="shifted-text">
+				<h6>{{ comment.author }}</h3>
+				<p>{{ comment.text }}</p>
+				<h6 class="shifted-text">{{ comment.created }}</h6>
+			</div>
+			{% endfor %}
+			{% if form %}
+			<form action="." method="post" id="comment-form">
+			{% csrf_token %}
+			{{ form.as_p }}
+				<button class="btn" type="button" id="comment-btn" onclick="$('#comment-form').submit();">Comment!</button>
+			</form>
+			{% else %}
+			<h5 style="color:blue;">Login to comment!</h5>
+			{% endif %}
 		</div>
-		{% endfor %}
-		{% if form %}
-		<form action="." method="post" id="comment-form">
-		{% csrf_token %}
-		{{ form.as_p }}
-			<button class="btn" type="button" id="comment-btn" onclick="$('#comment-form').submit();">Comment!</button>
-		</form>
-		{% else %}
-		<h5 style="color:blue;">Login to comment!</h5>
-		{% endif %}
 {% endblock %}
 
 {% block tags-list %}

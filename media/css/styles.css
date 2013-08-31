@@ -21,6 +21,8 @@
 #content {
 	border: solid 1px;
 	border-radius: 5px;
+	padding-left: 2%;
+	padding-right: 2%;
 	background: rgba(255,255,55,0.3);
 }
 
@@ -89,6 +91,11 @@ left: 10px;
 #comment-btn {
 	position: relative;
 	right: -30%;
+}
+
+.shifted-text {
+	position:relative;
+	left: 3%;
 }
 
 /* Bootstrap overrides */
