@@ -32,15 +32,29 @@ def post(request, post_id):
 		if request.method == 'POST':
 			form = CommentForm(request.POST)
 			if form.is_valid():
-				print request.user.id, type(request.user.id)
 				user = UserSocialAuth.objects.get(user_id=request.user.id)
 				form.save(user)
 				comment = Comment(post=post, reply_to=None)
 				form = CommentForm(instance=comment)
+				comments = Comment.objects.filter(post=post)
+				for comment in comments:
+					if comment.author.provider == 'google-oauth2':
+						comment.author.provider_icon = 'google'
+					elif comment.author.provider == 'facebook':
+						comment.author.provider_icon = 'facebook'
+					elif comment.author.provider_icon == 'github':
+						comment.author.provider_icon = 'github'
 				return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form':form, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
 		else:
 			comment = Comment(post=post, reply_to=None)
 			form = CommentForm(instance=comment)
+			for comment in comments:
+				if comment.author.provider == 'google-oauth2':
+					comment.author.provider_icon = 'google'
+				elif comment.author.provider == 'facebook':
+					comment.author.provider_icon = 'facebook'
+				elif comment.author.provider_icon == 'github':
+					comment.author.provider_icon = 'github'
 			return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
 	else:
 		request.user.logged_in = False

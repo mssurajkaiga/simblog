@@ -88,9 +88,19 @@ left: 10px;
 	border: solid 1px;
 }
 
+.comment {
+	width: 80%;
+}
+
+.provider-icon {
+	height: 3%;
+	width: 3%;
+}
+
 #comment-btn {
 	position: relative;
-	right: -30%;
+	margin-bottom: 1.3%;
+	margin-left: 1%;
 }
 
 .shifted-text {
@@ -141,4 +151,8 @@ input[type="color"]:focus,
 
 .row {
 	margin: 4%;
+}
+
+.btn {
+
 }

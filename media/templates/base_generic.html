@@ -6,11 +6,23 @@
 	    <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
 	    <link rel="stylesheet" href="/static/css/styles.css" />
 	    <script src="/static/js/jquery-2.0.3.min.js"></script>
+	    <script src="/static/js/jquery-autogrow.min.js"></script>
+	    <script src="/static/js/jquery.autosize.min.js"></script>
 		<script src="/static/bootstrap/js/bootstrap.min.js"></script>
 	    <script type="text/javascript">
 	    	function search() {
 	    		data = $('#appendedInputButton').val();
 	    		window.location = '/blog/posts/search/'+data;
+	    	}
+
+	    	function validateComment() {
+	    		var text = $('#comment-form > textarea').val();
+	    		if (text==null || text=='') {
+	    			return false;
+	    		}
+	    		else {
+	    			$('#comment-form').submit();
+	    		}
 	    	}
 
 	    	$(document).ready(function() {
@@ -19,6 +31,9 @@
         				search();
     				}
 				});
+
+				$('#id_text').autoGrow();
+				$('#id_text').autosize();
 	    	});
 	    </script>
 	    <title>{% block title %}My blog{% endblock %}</title>
@@ -47,7 +62,7 @@
 
 				{% block credentials %}
 				{% if user.logged_in %}
-					<li><span class="navbar-text">Logged in as: <strong>{{ user.username }}</strong></span></li>
+					<li><span class="navbar-text">Logged in as: <strong>{{ user.first_name }} {{ user.last_name }}</strong></span></li>
 					<li><span class="navbar-text" style="padding-left:3px; padding-right: 3px; color: #ff33ee;"> | </span></li>
 					<li><span class="navbar-text"><a href="/logout/" style="text-decoration:none;">Logout</a></span></li>
 				{% else %}

@@ -10,7 +10,7 @@ class CommentForm(ModelForm):
 		widgets = {
 			'post': HiddenInput(),
 			'reply_to': HiddenInput(),
-			'text': Textarea(attrs={'style':'width:40%;', 'rows':2})
+			'text': Textarea(attrs={'type':"text",'placeholder':"Comment...", 'style':'width:70%; max-width: 80%; height: 20px; resize:none;', 'rows':1})
 		}
 
 	def save(self, user, *args, **kwargs):

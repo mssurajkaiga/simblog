@@ -34,7 +34,7 @@
 {% endblock %}
 
 {% block tags-list %}
-<h3>Tags</h3>
+<h3 class="text-center">Tags</h3>
 <ul class="inline">
 	{% for tag in tags %}
 	<li><a href="/blog/posts/tag/{{tag.alt_name}}"><h4>{{ tag.name }} </h4></a></li>

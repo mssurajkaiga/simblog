@@ -6,8 +6,8 @@
 			<p class="lead">{{ post.text }}</p>
 
 			{% for comment in comments %}
-			<div id="{{comment.id}}" class="shifted-text">
-				<h6>{{ comment.author }}</h3>
+			<div id="{{comment.id}}" class="shifted-text comment">
+				<h6><i class="icon-comment"></i> {{ comment.author.user.first_name }} {{ comment.author.user.last_name }} <img src="/static/icons/{{comment.author.provider_icon}}.png" class="provider-icon"></img></h3>
 				<p>{{ comment.text }}</p>
 				<h6 class="shifted-text">{{ comment.created }}</h6>
 			</div>
@@ -15,8 +15,10 @@
 			{% if form %}
 			<form action="." method="post" id="comment-form">
 			{% csrf_token %}
-			{{ form.as_p }}
-				<button class="btn" type="button" id="comment-btn" onclick="$('#comment-form').submit();">Comment!</button>
+			{{ form.post}}
+			{{ form.reply_to }}
+			{{ form.text }}
+				<button class="btn btn-inverse" type="button" id="comment-btn" onclick="validateComment()">Comment!</button>
 			</form>
 			{% else %}
 			<h5 style="color:blue;">Login to comment!</h5>
@@ -26,7 +28,7 @@
 
 {% block tags-list %}
 <div class="row sidebar-list">
-	<h3>Tags</h3>
+	<h3 class="text-center">Tags</h3>
 	<ul class="inline">
 		{% for tag in tags %}
 		<li><a href="/blog/posts/tag/{{tag.alt_name}}"><h4>{{ tag.name }} </h4></a></li>
@@ -37,7 +39,7 @@
 
 {% block all-posts %}
 <div class="row sidebar-list">
-	<h3>All Posts</h3>
+	<h3 class="text-center">All Posts</h3>
 	<ul class="inline">
 		{% for post in all_posts %}
 		<li><a href="/blog/post/{{ post.id }}">{{ post.title }}</a></li>
@@ -48,7 +50,7 @@
 
 {% block recent-posts %}
 <div class="row sidebar-list">
-	<h3>Recent Posts</h3>
+	<h3 class="text-center">Recent Posts</h3>
 	<ul class="inline">
 		{% for post in recent_posts %}
 		<li><a href="/blog/post/{{ post.id }}">{{ post.title }}</a></li>
