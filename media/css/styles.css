@@ -108,9 +108,21 @@ left: 10px;
 	left: 3%;
 }
 
+.profile-link {
+	text-decoration: none;
+	color:black;
+}
+
+.profile-link:hover {
+	text-decoration: none;
+}
 /* Bootstrap overrides */
 a {
 	color:white;
+}
+
+.text-content a {
+	color:blue;
 }
 
 .input-append {

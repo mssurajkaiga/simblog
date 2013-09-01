@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.core.context_processors import csrf
 from blog.models import *
 from blog.forms import *
+import json
+import urllib
 import re
 
 from django.http import HttpResponseRedirect
@@ -37,24 +39,10 @@ def post(request, post_id):
 				comment = Comment(post=post, reply_to=None)
 				form = CommentForm(instance=comment)
 				comments = Comment.objects.filter(post=post)
-				for comment in comments:
-					if comment.author.provider == 'google-oauth2':
-						comment.author.provider_icon = 'google'
-					elif comment.author.provider == 'facebook':
-						comment.author.provider_icon = 'facebook'
-					elif comment.author.provider_icon == 'github':
-						comment.author.provider_icon = 'github'
 				return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form':form, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
 		else:
 			comment = Comment(post=post, reply_to=None)
 			form = CommentForm(instance=comment)
-			for comment in comments:
-				if comment.author.provider == 'google-oauth2':
-					comment.author.provider_icon = 'google'
-				elif comment.author.provider == 'facebook':
-					comment.author.provider_icon = 'facebook'
-				elif comment.author.provider_icon == 'github':
-					comment.author.provider_icon = 'github'
 			return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
 	else:
 		request.user.logged_in = False
@@ -71,6 +59,10 @@ def posts(request, year):
 		posts = Post.objects.all()
 	else:	
 		posts = Post.objects.filter(created__year=year)
+
+	for post in posts:
+		if len(post.text)>600:
+			post.text = post.text[:600] + '<a href="/blog/post/{}">. . .</a>'.format(post.id)
 	tags = get_tags_by_posts(posts)
 	all_posts, recent_posts = get_all_posts()
 	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
@@ -123,6 +115,7 @@ def complete(request):
 		request.user.logged_in = True
 	else:
 		request.user.logged_in = False
+	return HttpResponseRedirect('/blog/posts/all')
 	return render(request, 'members.html')
 
 

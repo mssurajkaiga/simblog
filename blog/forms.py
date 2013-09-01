@@ -1,7 +1,7 @@
 #from django import forms
 from django.forms.formsets import formset_factory
 from django.forms import ModelForm, HiddenInput, Textarea
-from blog.models import Comment
+from blog.models import Comment, Author
 
 class CommentForm(ModelForm):
 	class Meta:
@@ -16,7 +16,7 @@ class CommentForm(ModelForm):
 	def save(self, user, *args, **kwargs):
 		commit = kwargs.pop('commit', True)
 		instance = super(CommentForm, self).save(*args, commit = False, **kwargs)
-		instance.author = user 
+		instance.author = user.author
 		if commit:
 		    instance.save()
 		return instance
