@@ -1,3 +1,0 @@
-This is a test file.
-It has 3 lines in it.
-It also has 75 characters in it.
