@@ -116,13 +116,26 @@ left: 10px;
 .profile-link:hover {
 	text-decoration: none;
 }
+
+.search-comment {
+	text-decoration: none;
+	color: #001000;
+}
 /* Bootstrap overrides */
 a {
-	color:white;
+	color:#fafafa;
 }
 
-.text-content a {
-	color:blue;
+a:hover{
+	text-decoration: none;
+}
+
+hr {
+	border-color: #456456;
+}
+
+.content-text a {
+	color:#006;
 }
 
 .input-append {

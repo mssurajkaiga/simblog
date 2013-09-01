@@ -1,14 +1,16 @@
 {% extends "base_generic.html" %}
 {% block content %}
-		{% if msg%}
-		<h1> {{ msg }} </h1>
+		{% if msg %}
+		<h2 class="center-text"> {{ msg }} </h2>
 		{% endif %}
 		{% if result_posts %}
 		<h1>Posts</h1>
 		{% for post in result_posts %}
 			<a href="/blog/post/{{post.id}}"><h2>{{ post.title }}</h2></a>
 			<h3>{{ post.created }}</h3>
-			<p>{{ post.text }}</p>
+			<div class="content-text">
+				{{ post.text | safe}}
+			</div>
 		{% endfor %}
 		<hr/>
 		{% endif %}
@@ -16,10 +18,11 @@
 		{% if result_comments %}
 		<h1>Comments</h1>
 		{% for comment in result_comments %}
-			<a href="/blog/post/{{comment.post.id}}#{{comment.id}}"><h2>{{ comment.post.title }}</h2></a>
-			<h4>{{ comment.author }}</h4>
-			<h3>{{ comment.created }}</h3>
-			<p>{{ comment.text }}</p>
+			<div id="{{comment.id}}" class="shifted-text comment">
+				<h6><i class="icon-comment"></i> <a class="profile-link" href="{{comment.author.link}}" target="_blank">{{ comment.author.user.user.first_name }} {{ comment.author.user.user.last_name }} <img src="/static/icons/{{comment.author.provider_icon}}.png" class="provider-icon"></img></a></h3>
+				<p><a href="/blog/post/{{comment.post.id}}#{{comment.id}}" class="search-comment">{{ comment.text }}</a></p>
+				<h6 class="shifted-text">{{ comment.created }}</h6>
+			</div>
 		{% endfor %}
 		<hr/>
 		{% endif %}
@@ -27,13 +30,14 @@
 		{% if result_tags %}
 		<h1>Tags</h1>
 		{% for tag in result_tags %}
-			<a href="/blog/posts/tag/{{tag.alt_name}}"><h2>{{ tag.name }} </h2></a>
+			<a href="/blog/posts/tag/{{tag.alt_name}}"><h3>{{ tag.name }}</h3></a>
 		{% endfor %}
 		{% endif %}
 
 {% endblock %}
 
 {% block tags-list %}
+{% if tags%}
 <div class="row sidebar-list">
 	<h3 class="text-center">Tags</h3>
 	<ul class="inline">
@@ -42,4 +46,5 @@
 		{% endfor %}
 	</ul>
 </div>
+{% endif %}
 {% endblock %}

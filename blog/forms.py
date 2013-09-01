@@ -1,6 +1,6 @@
 #from django import forms
 from django.forms.formsets import formset_factory
-from django.forms import ModelForm, HiddenInput, Textarea
+from django.forms import Form, CharField, ModelForm, HiddenInput, TextInput, Textarea
 from blog.models import Comment, Author
 
 class CommentForm(ModelForm):
@@ -20,3 +20,9 @@ class CommentForm(ModelForm):
 		if commit:
 		    instance.save()
 		return instance
+
+class SearchForm(Form):
+	data = CharField(max_length=100)
+	widgets = {
+			'data': TextInput(attrs={'class':'span2', 'id':'appendedInputButton', 'type':"text", 'placeholder':"Search..."})
+		}

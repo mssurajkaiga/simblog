@@ -3,8 +3,6 @@ from django.shortcuts import render
 from django.core.context_processors import csrf
 from blog.models import *
 from blog.forms import *
-import json
-import urllib
 import re
 
 from django.http import HttpResponseRedirect
@@ -25,6 +23,7 @@ def post(request, post_id):
 	word_count = len(re.findall("\w+", post.text))
 	posttags = PostTag.objects.filter(post=post)
 	all_posts, recent_posts = get_all_posts()
+	search_form = SearchForm()
 	tags = []
 	for posttag in posttags:
 		tags.append(posttag.tag)
@@ -39,14 +38,14 @@ def post(request, post_id):
 				comment = Comment(post=post, reply_to=None)
 				form = CommentForm(instance=comment)
 				comments = Comment.objects.filter(post=post)
-				return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form':form, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
+				return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form':form, 'search_form':search_form, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
 		else:
 			comment = Comment(post=post, reply_to=None)
 			form = CommentForm(instance=comment)
-			return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
+			return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'form': form, 'search_form':search_form, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
 	else:
 		request.user.logged_in = False
-	return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
+	return render(request, 'post.html', {'post': post, 'comments':comments, 'word_count':word_count, 'search_form':search_form, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
 
 def posts(request, year):
 	if request.user.is_authenticated():
@@ -59,13 +58,11 @@ def posts(request, year):
 		posts = Post.objects.all()
 	else:	
 		posts = Post.objects.filter(created__year=year)
-
-	for post in posts:
-		if len(post.text)>600:
-			post.text = post.text[:600] + '<a href="/blog/post/{}">. . .</a>'.format(post.id)
+	search_form = SearchForm()
+	posts = trim_data(posts)
 	tags = get_tags_by_posts(posts)
 	all_posts, recent_posts = get_all_posts()
-	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts})
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts, 'search_form':search_form})
 
 def posts_by_month(request, year, month):
 	if request.user.is_authenticated():
@@ -73,8 +70,10 @@ def posts_by_month(request, year, month):
 	else:
 		request.user.logged_in = False
 	posts = Post.objects.filter(created__year=year, created__month=month)
+	form = SearchForm()
 	tags = get_tags_by_posts(posts)
-	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
+	posts = trim_data(posts)
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'search_form':search_form})
 
 def posts_by_day(request, year, month, day):
 	if request.user.is_authenticated():
@@ -83,7 +82,9 @@ def posts_by_day(request, year, month, day):
 		request.user.logged_in = False
 	posts = Post.objects.filter(created__year=year, created__month=month, created__day=day)
 	tags = get_tags_by_posts(posts)
-	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
+	posts = trim_data(posts)
+	search_form = SearchForm()
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'search_form':search_form})
 
 def posts_by_tag(request, tag):
 	if request.user.is_authenticated():
@@ -95,18 +96,31 @@ def posts_by_tag(request, tag):
 	for posttag in posttags:
 		posts.append(posttag.post)
 	tags = get_tags_by_posts(posts)
-	return render(request, 'posts.html', {'posts': posts, 'tags':tags})
+	posts = trim_data(posts)
+	search_form = SearchForm()
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'search_form':search_form})
 
 #Search functionality
-def search(request, data):
+def search(request):
 	if request.user.is_authenticated():
 		request.user.logged_in = True
 	else:
 		request.user.logged_in = False
-	result = search_all(data)
-	print result
+	if request.method == 'POST':
+		form = SearchForm(request.POST)
+		if form.is_valid():
+			result = search_all(form.cleaned_data['data'])
+		else:
+			result = None
+			form = SearchForm()
+	else:
+		result = None
+		form = SearchForm()	
+
 	if not result:
-		return render(request, 'search.html', {'msg': 'Search returned no results!'})	
+		return render(request, 'search.html', {'msg': 'Search returned no results!', 'search_form':form})
+	else:
+		result = dict({'search_form':form}, **result)
 	return render(request, 'search.html', result)
 
 @login_required
@@ -116,8 +130,6 @@ def complete(request):
 	else:
 		request.user.logged_in = False
 	return HttpResponseRedirect('/blog/posts/all')
-	return render(request, 'members.html')
-
 
 def logout(request):
 	if request.user.is_authenticated():

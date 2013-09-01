@@ -11,8 +11,13 @@
 		<script src="/static/bootstrap/js/bootstrap.min.js"></script>
 	    <script type="text/javascript">
 	    	function search() {
-	    		data = $('#appendedInputButton').val();
-	    		window.location = '/blog/posts/search/'+data;
+	    		var text = $('#search-form > input').val();
+	    		if (text==null || text=='') {
+	    			return false;
+	    		}
+	    		else {
+	    			$('#search-form').submit();
+	    		}
 	    	}
 
 	    	function validateComment() {
@@ -54,10 +59,11 @@
 	              <li><a href="#about">About</a></li>
 	              <li><a href="#contact">Contact</a></li>
 	            </ul>
-                <div class="input-append">
-				    <input class="span2" id="appendedInputButton" placeholder="Search..." type="text">
-				    <button class="btn" type="button" onclick="search()"><i class="icon-search"></i></button>
-			    </div>
+            	<form method="post" action="/blog/search/" id="search-form" class="input-append">
+            		{% csrf_token %}
+			    	{{ search_form.data }}
+			    	<button class="btn" type="button" onclick="search()"><i class="icon-search"></i></button>
+			    </form>
 	            <ul class="nav pull-right">
 
 				{% block credentials %}
