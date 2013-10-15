@@ -1,24 +1,29 @@
 {% extends "base_generic.html" %}
-
+{% if home %}
+{% block active %}
+<li class="active"><a href="/blog/posts/all">Home</a></li>
+<li><a href="/blog/about">About Me</a></li>
+{% endblock %}
+{% endif %}
 {% block content %}
-
+	<div class="content">
 		{% for post in posts %}
-			<a href="/blog/post/{{ post.id }}"><h2>{{ post.title }}</h2></a>
-			<h3>{{ post.created }}</h3>
+			<a href="/blog/post/{{ post.id }}"><h2 class="text-center">{{ post.title }}</h2></a>
+			<h4 class="text-center">{{ post.created | date:"jS M Y"}}</h4>
 			<div class='content-text'>
 				{{ post.text | safe}}
 			</div>
 			
 		{% endfor %}
-
+	</div>
 {% endblock %}
 
 {% block tags-list %}
 <div class="row sidebar-list">
 	<h3 class="text-center">Tags</h3>
-	<ul class="inline">
+	<ul class="inline tagset">
 		{% for tag in tags %}
-		<li><a href="/blog/posts/tag/{{tag.alt_name}}"><h4>{{ tag.name }} </h4></a></li>
+		<li><a href="/blog/posts/tag/{{tag.alt_name}}">{{ tag.name }}</a></li>
 		{% endfor %}
 	</ul>
 </div>
@@ -27,20 +32,34 @@
 {% block all-posts %}
 <div class="row sidebar-list">
 	<h3 class="text-center">All Posts</h3>
-	<ul class="inline">
-		{% for post in all_posts %}
-		<li><a href="/blog/post/{{ post.id }}">{{ post.title }}</a></li>
+	<ul class="nav nav-list">
+		{% for year, item in all_posts.items %}
+		<li class="p-list-item"><i class="icon-chevron-right"></i> <strong>{{ year }}</strong></li>
+		<li class="hidden">
+			<ul class="nav nav-list">
+				{% for month, posts in item.items %}
+				<li class="p-list-item"><i class="icon-chevron-right"></i><strong>{{ month }}</strong></li>
+				<li class="hidden" id="post-list">
+					<ul class="nav nav-list">
+						{% for post in posts %}
+						<li><a href="/blog/post/{{ post.id }}">{{ post.title }}</a></li>
+						{% endfor %}
+					</ul>
+				</li>
+				{% endfor %}
+			</ul>
+		</li>
 		{% endfor %}
 	</ul>
 </div>
-{% endblock %}
+{% endblock %}}
 
 {% block recent-posts %}
 <div class="row sidebar-list">
 	<h3 class="text-center">Recent Posts</h3>
-	<ul class="inline">
+	<ul class="nav nav-list">
 		{% for post in recent_posts %}
-		<li><a href="/blog/post/{{ post.id }}">{{ post.title }}</a></li>
+		<li class="text-center"><a href="/blog/post/{{ post.id }}" >{{ post.title }}</a></li>
 		{% endfor %}
 	</ul>
 </div>

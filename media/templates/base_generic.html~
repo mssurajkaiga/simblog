@@ -9,8 +9,8 @@
 	    <script src="/static/js/jquery-2.0.3.min.js"></script>
 	    <script src="/static/js/jquery-autogrow.min.js"></script>
 	    <script src="/static/js/jquery.autosize.min.js"></script>
-	    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-	    {% block additional_js %}{% endblock %}
+		<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+		{% block additional_js %}{% endblock %}
 	    <script type="text/javascript">
 	    	function search() {
 	    		var text = $('#search-form > input').val();

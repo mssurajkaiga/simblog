@@ -1,8 +1,8 @@
 from blog.models import *
 from django.db.models import Q
-from datetime import datetime
-
-MAX_RECENT_POSTS = 3
+from datetime import datetime, timedelta
+from calendar import month_name
+from collections import OrderedDict
 
 def trim_data(posts):
 	for post in posts:
@@ -15,7 +15,8 @@ def search_by_tag(tag):
 	posts = []
 	for posttag in posttags:
 		posts.append(posttag.post)
-
+		
+	print sorted(posts, key= lambda post: post.created)
 	return posts
 
 def search_by_tags(tags):
@@ -55,8 +56,8 @@ def search_all(data):
 	result_tags = []
 	result_comments = []
 	for data in dataset:
-		result_posts.extend(Post.objects.filter(Q(title__icontains=data) | Q(text__icontains=data)))
-		result_comments.extend(Comment.objects.filter(Q(text__icontains=data)))
+		result_posts.extend(Post.objects.filter(Q(title__icontains=data) | Q(text__icontains=data)).order_by('-created'))
+		result_comments.extend(Comment.objects.filter(Q(text__icontains=data)).order_by('-created'))
 		result_tags.extend(Tag.objects.filter(Q(name__icontains=data) | Q(alt_name__icontains=data)))
 
 	result_posts = list(set(result_posts))
@@ -74,9 +75,13 @@ def search_all(data):
 	return {'result_posts': result_posts, 'result_tags': result_tags, 'result_comments': result_comments, 'tags': tags}
 
 def get_all_posts():
-	posts = Post.objects.order_by('created').all()
-	recent_posts = []
-	rev = list(reversed(posts))
-	for post in rev[:3]:
-		recent_posts.append(post)
-	return [posts, recent_posts]
+	posts = Post.objects.order_by('-created').all()
+	recent_posts = Post.objects.filter(created__gt=datetime.now()-timedelta(days=30)).order_by('-created')
+	all_posts = OrderedDict()
+	for post in posts:
+		if post.created.year not in all_posts:
+			all_posts[post.created.year] = OrderedDict()
+		if month_name[post.created.month] not in all_posts[post.created.year]:
+			all_posts[post.created.year][month_name[post.created.month]] = []
+		all_posts[post.created.year][month_name[post.created.month]].append(post)
+	return [all_posts, recent_posts]

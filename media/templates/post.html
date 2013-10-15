@@ -1,19 +1,30 @@
 {% extends "base_generic.html" %}
+{% block additional_js %}
+<script type="text/javascript" src="/static/js/test-embed.js"></script>
+{% endblock %}
+{% block meta %}
+<meta name="description" content="{{ post.title }} - created on {{ post.created | date:"jS M Y" }}">
+{% endblock %}
+{% block title %}{{ post.title}} - Bits of my mind!!{% endblock %}
 {% block content %}
 		<div class="content">
 			<h2 class="text-center">{{ post.title }}</h2>
-			<h4 class="text-center">{{ post.created }}<span class="word_count"> | Word Count: {{ word_count }}</span></h4>
+			<h5 class="text-center">{{ post.created | date:"jS M Y"}}<span class="word_count"> | Word Count: <em>{{ word_count }}</em></span></h5>
 			<div class="content-text">
 					{{ post.text | safe}}
 			</div>
 
-			{% for comment in comments %}
-			<div id="{{comment.id}}" class="shifted-text comment">
-				<h6><i class="icon-comment"></i> <a class="profile-link" href="{{comment.author.link}}" target="_blank">{{ comment.author.user.user.first_name }} {{ comment.author.user.user.last_name }} <img src="/static/icons/{{comment.author.provider_icon}}.png" class="provider-icon"></img></a></h3>
-				<p>{{ comment.text }}</p>
-				<h6 class="shifted-text">{{ comment.created }}</h6>
+			{% if comments %}
+			<div class="comments">
+				{% for comment in comments %}
+				<div id="{{comment.id}}" class="shifted-text comment tip left">
+					<h6><i class="icon-comment"></i> <a class="profile-link" href="{{comment.author.link}}" target="_blank">{{ comment.author.user.user.first_name }} {{ comment.author.user.user.last_name }} <img src="/static/icons/{{comment.author.provider_icon}}.png" class="provider-icon"></img></a></h6>
+					<h6 class="shifted-text">{{ comment.created }}</h6>
+					<p>{{ comment.text }}</p>
+				</div>
+				{% endfor %}
 			</div>
-			{% endfor %}
+			{% endif %}
 			{% if form %}
 			<form action="." method="post" id="comment-form">
 			{% csrf_token %}
@@ -31,9 +42,9 @@
 {% block tags-list %}
 <div class="row sidebar-list">
 	<h3 class="text-center">Tags</h3>
-	<ul class="inline">
+	<ul class="inline tagset">
 		{% for tag in tags %}
-		<li><a href="/blog/posts/tag/{{tag.alt_name}}"><h4>{{ tag.name }} </h4></a></li>
+		<li><a href="/blog/posts/tag/{{tag.alt_name}}">{{ tag.name }}</a></li>
 		{% endfor %}
 	</ul>
 </div>
@@ -42,9 +53,23 @@
 {% block all-posts %}
 <div class="row sidebar-list">
 	<h3 class="text-center">All Posts</h3>
-	<ul class="inline">
-		{% for post in all_posts %}
-		<li><a href="/blog/post/{{ post.id }}">{{ post.title }}</a></li>
+	<ul class="nav nav-list">
+		{% for year, item in all_posts.items %}
+		<li class="p-list-item"><i class="icon-chevron-right"></i> <strong>{{ year }}</strong></li>
+		<li class="hidden">
+			<ul class="nav nav-list">
+				{% for month, posts in item.items %}
+				<li class="p-list-item"><i class="icon-chevron-right"></i><strong>{{ month }}</strong></li>
+				<li class="hidden" id="post-list">
+					<ul class="nav nav-list">
+						{% for post in posts %}
+						<li><a href="/blog/post/{{ post.id }}">{{ post.title }}</a></li>
+						{% endfor %}
+					</ul>
+				</li>
+				{% endfor %}
+			</ul>
+		</li>
 		{% endfor %}
 	</ul>
 </div>
@@ -53,9 +78,9 @@
 {% block recent-posts %}
 <div class="row sidebar-list">
 	<h3 class="text-center">Recent Posts</h3>
-	<ul class="inline">
+	<ul class="nav nav-list">
 		{% for post in recent_posts %}
-		<li><a href="/blog/post/{{ post.id }}">{{ post.title }}</a></li>
+		<li class="text-center"><a href="/blog/post/{{ post.id }}" >{{ post.title }}</a></li>
 		{% endfor %}
 	</ul>
 </div>

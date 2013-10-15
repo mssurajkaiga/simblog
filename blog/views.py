@@ -18,6 +18,10 @@ from social_auth.utils import setting
 from blog.utility import *
 
 def post(request, post_id):
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
 	post = Post.objects.get(id = post_id)
 	comments = Comment.objects.filter(post=post)
 	word_count = len(re.findall("\w+", post.text))
@@ -29,7 +33,6 @@ def post(request, post_id):
 		tags.append(posttag.tag)
 
 	if request.user.is_authenticated():
-		request.user.logged_in = True
 		if request.method == 'POST':
 			form = CommentForm(request.POST)
 			if form.is_valid():
@@ -55,36 +58,40 @@ def posts(request, year):
 	output = []
 	form_is_saved = False
 	if year=='all':
-		posts = Post.objects.all()
+		posts = Post.objects.all().order_by('-created')
+		home = True
 	else:	
-		posts = Post.objects.filter(created__year=year)
+		posts = Post.objects.filter(created__year=year).order_by('-created')
+		home = False
 	search_form = SearchForm()
 	posts = trim_data(posts)
 	tags = get_tags_by_posts(posts)
 	all_posts, recent_posts = get_all_posts()
-	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts, 'search_form':search_form})
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'all_posts':all_posts, 'recent_posts':recent_posts, 'search_form':search_form, 'home':home})
 
 def posts_by_month(request, year, month):
 	if request.user.is_authenticated():
 		request.user.logged_in = True
 	else:
 		request.user.logged_in = False
-	posts = Post.objects.filter(created__year=year, created__month=month)
-	form = SearchForm()
+	posts = Post.objects.filter(created__year=year, created__month=month).order_by('-created')
+	search_form = SearchForm()
 	tags = get_tags_by_posts(posts)
 	posts = trim_data(posts)
-	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'search_form':search_form})
+	all_posts, recent_posts = get_all_posts()
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'search_form':search_form, 'all_posts':all_posts, 'recent_posts':recent_posts})
 
 def posts_by_day(request, year, month, day):
 	if request.user.is_authenticated():
 		request.user.logged_in = True
 	else:
 		request.user.logged_in = False
-	posts = Post.objects.filter(created__year=year, created__month=month, created__day=day)
+	posts = Post.objects.filter(created__year=year, created__month=month, created__day=day).order_by('-created')
 	tags = get_tags_by_posts(posts)
 	posts = trim_data(posts)
 	search_form = SearchForm()
-	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'search_form':search_form})
+	all_posts, recent_posts = get_all_posts()
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'search_form':search_form, 'all_posts':all_posts, 'recent_posts':recent_posts})
 
 def posts_by_tag(request, tag):
 	if request.user.is_authenticated():
@@ -95,10 +102,12 @@ def posts_by_tag(request, tag):
 	posts = []
 	for posttag in posttags:
 		posts.append(posttag.post)
+	posts = sorted(posts, key= lambda post: post.created, reverse=True)
 	tags = get_tags_by_posts(posts)
 	posts = trim_data(posts)
 	search_form = SearchForm()
-	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'search_form':search_form})
+	all_posts, recent_posts = get_all_posts()
+	return render(request, 'posts.html', {'posts': posts, 'tags':tags, 'search_form':search_form, 'all_posts':all_posts, 'recent_posts':recent_posts})
 
 #Search functionality
 def search(request):
@@ -117,11 +126,30 @@ def search(request):
 		result = None
 		form = SearchForm()	
 
+	all_posts, recent_posts = get_all_posts()
 	if not result:
-		return render(request, 'search.html', {'msg': 'Search returned no results!', 'search_form':form})
+		return render(request, 'search.html', {'msg': 'Search returned no results!', 'search_form':form, 'all_posts':all_posts, 'recent_posts':recent_posts})
 	else:
-		result = dict({'search_form':form}, **result)
+		result = dict({'search_form':form, 'all_posts':all_posts, 'recent_posts':recent_posts}, **result)
 	return render(request, 'search.html', result)
+
+def about(request):
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
+	all_posts, recent_posts = get_all_posts()
+	search_form = SearchForm()
+	return render(request, 'about.html', {'all_posts': all_posts, 'recent_posts': recent_posts, 'search_form':search_form})
+
+def contact(request):
+	if request.user.is_authenticated():
+		request.user.logged_in = True
+	else:
+		request.user.logged_in = False
+	all_posts, recent_posts = get_all_posts()
+	search_form = SearchForm()
+	return render(request, 'about.html', {'all_posts': all_posts, 'recent_posts': recent_posts, 'search_form':search_form})
 
 @login_required
 def complete(request):

@@ -1,50 +1,45 @@
 {% extends "base_generic.html" %}
+{% block additional_js %}
+<script type="text/javascript" src="/js/test-embed.js"></script>
+{% endblock %}
+{% block meta %}
+<meta name="description" content="{{ post.title }} - created on {{ post.created | date:"jS M Y" }}">
+{% endblock %}
+{% block title %}{{ post.title}} - Bits of my mind!!{% endblock %}
 {% block content %}
-		{% if msg %}
-		<h2 class="center-text"> {{ msg }} </h2>
-		{% endif %}
-		{% if result_posts %}
-		<div class="result-posts">
-			<h2 class="center-text">Posts</h2>
-			{% for post in result_posts %}
-			<a href="/blog/post/{{ post.id }}"><h3 class="text-center">{{ post.title }}</h3></a>
-			<h4 class="text-center">{{ post.created | date:"jS M Y"}}</h4>
-			<div class='content-text'>
-				{{ post.text | safe}}
+		<div class="content">
+			<h2 class="text-center">{{ post.title }}</h2>
+			<h5 class="text-center">{{ post.created | date:"jS M Y"}}<span class="word_count"> | Word Count: <em>{{ word_count }}</em></span></h5>
+			<div class="content-text">
+					{{ post.text | safe}}
 			</div>
-			
-		{% endfor %}
-		</div>
-		{% endif %}
 
-		{% if result_comments %}
-		<div class="result-comments">
-			<h2>Comments</h2>
-			{% for comment in result_comments %}
-				<div id="{{comment.id}}" class="comment tip left">
+			{% if comments %}
+			<div class="comments">
+				{% for comment in comments %}
+				<div id="{{comment.id}}" class="shifted-text comment tip left">
 					<h6><i class="icon-comment"></i> <a class="profile-link" href="{{comment.author.link}}" target="_blank">{{ comment.author.user.user.first_name }} {{ comment.author.user.user.last_name }} <img src="/static/icons/{{comment.author.provider_icon}}.png" class="provider-icon"></img></a></h6>
 					<h6 class="shifted-text">{{ comment.created }}</h6>
-					<a href="/blog/post/{{comment.post.id}}#{{comment.id}}" class="search-comment"><p>{{ comment.text }}</p></a>
+					<p>{{ comment.text }}</p>
 				</div>
-			{% endfor %}
-		</div>
-		{% endif %}
-
-		{% if result_tags %}
-		<div class="result-tags">
-			<h2>Tags</h2>
-			<ul>
-				{% for tag in result_tags %}
-				<li><a href="/blog/posts/tag/{{tag.alt_name}}">{{ tag.name }}</a></li>
 				{% endfor %}
-			</ul>
+			</div>
+			{% endif %}
+			{% if form %}
+			<form action="." method="post" id="comment-form">
+			{% csrf_token %}
+			{{ form.post}}
+			{{ form.reply_to }}
+			{{ form.text }}
+				<button class="btn btn-inverse" type="button" id="comment-btn" onclick="validateComment()">Comment!</button>
+			</form>
+			{% else %}
+			<h5 style="color:blue;">Login to comment!</h5>
+			{% endif %}
 		</div>
-		{% endif %}
-
 {% endblock %}
 
 {% block tags-list %}
-{% if tags%}
 <div class="row sidebar-list">
 	<h3 class="text-center">Tags</h3>
 	<ul class="inline tagset">
@@ -53,7 +48,6 @@
 		{% endfor %}
 	</ul>
 </div>
-{% endif %}
 {% endblock %}
 
 {% block all-posts %}
@@ -79,7 +73,7 @@
 		{% endfor %}
 	</ul>
 </div>
-{% endblock %}}
+{% endblock %}
 
 {% block recent-posts %}
 <div class="row sidebar-list">
